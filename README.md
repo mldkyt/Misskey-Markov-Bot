@@ -4,7 +4,7 @@ A markov bot for misskey.
 
 # Requirements
 
-This script requires the [`Misskey.py`](https://pypi.org/project/Misskey.py/) python library.
+This script requires the [`Misskey.py`](https://pypi.org/project/Misskey.py/) and [`Markovify`](https://pypi.org/project/markovify/) python libraries.
 
 # Usage
 
