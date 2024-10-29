@@ -19,7 +19,7 @@ The api key and instance that is listed first will be the one used to post the g
 
 `user id` should be the id of the user that you wish the bot to get notes from. This must be the id from the instance that the `instance url` and `api key` are from. This is set up to allow multiple users on different instances to be followed *from their own instance*, in order to allow for more complete coverage.
 
-Once that file is set up, run `getposts.py` to retrive the posts from the specified users. This will output a file called `allnotes.json`, which will be used by the other scripts to create the markov posts.
+Once that file is set up, run `getPosts.py` to retrive the posts from the specified users. This will output a file called `allnotes.json`, which will be used by the other scripts to create the markov posts.
 
 Finally, run `post.py` to create the post. It will post to the instance and api key that is specified first in the `users.csv` file.
 
