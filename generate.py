@@ -17,16 +17,15 @@ def formatPost(inFile, filterFile=None):
             if note["visibility"] == "specified" or note["visibility"] == "followers": continue
             if note["cw"] == "#miceco": continue
             for word in filterList:
-                if note["cw"].count(word) != 0:
+                if (note["cw"] != None and word in note["cw"]):
                     containsFilteredWord = True
                     continue
-                elif note["text"].count(word) != 0:
+                elif word in note["text"]:
                     containsFilteredWord = True
                 else:
                     containsFilteredWord = False
             if containsFilteredWord: continue
             text.append(note["text"].replace("\n", "\\n"))
-    notes.close()
     return text
 
 def generatePost():
