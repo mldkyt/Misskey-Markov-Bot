@@ -16,29 +16,9 @@
 
 import json
 from os import path
+from threading import Thread
 
 from misskey import Misskey
-
-users = []
-update_notes = False
-
-if path.isfile("./allnotes.json"):
-    update_notes = True
-    with open('./allnotes.json', 'r', encoding='utf8') as f:
-        current_notes = json.load(f)
-    for user in current_notes:
-        users.append([user["userId"], user["instance"], user["token"], user["notes"][0]["id"]])
-else:
-    current_notes = []
-    usersFile = open("users.csv").read().split("\n")[:-1]
-    for line in usersFile:
-        if len(line) == 0: continue
-        users.append(line.replace(" ", "").split(",") + [None])
-
-for user in users:
-    print("Found user id {} on instance {} with token {}".format(user[0], user[1], user[2]))
-
-output = []
 
 
 def get_notes(user_id, instance, token, since=None):
@@ -81,19 +61,53 @@ def get_notes(user_id, instance, token, since=None):
     return all_notes
 
 
-for user in users:
-    output.append({"userId": user[0], "instance": user[1], "token": user[2],
-                   "notes": get_notes(user[0], user[1], user[2], user[3])})
+if __name__ == '__main__':
+    users = []
+    update_notes = False
 
-if update_notes:
-    for user in range(len(current_notes)):
-        if not output[user]["notes"]:
-            print("Skipping user as no new notes were recieved")
-            continue
-        else:
-            current_notes[user]["notes"] = output[user]["notes"] + current_notes[user]["notes"]
-else:
-    current_notes = output
+    if path.isfile("./allnotes.json"):
+        update_notes = True
+        with open('./allnotes.json', 'r', encoding='utf8') as f:
+            current_notes = json.load(f)
+        for user in current_notes:
+            users.append([user["userId"], user["instance"], user["token"], user["notes"][0]["id"]])
+    else:
+        current_notes = []
+        usersFile = open("users.csv").read().split("\n")[:-1]
+        for line in usersFile:
+            if len(line) == 0: continue
+            users.append(line.replace(" ", "").split(",") + [None])
 
-with open("./allnotes.json", 'w', encoding='utf8') as f:
-    json.dump(current_notes, f, indent="  ")
+    for user in users:
+        print("Found user id {} on instance {} with token {}".format(user[0], user[1], user[2]))
+
+    output = []
+
+
+    def get_user(a):
+        output.append({"userId": a[0], "instance": a[1], "token": a[2],
+                       "notes": get_notes(a[0], a[1], a[2], a[3])})
+
+
+    thr = []
+
+    for user in users:
+        t = Thread(target=get_user, args=(user,))
+        t.start()
+        thr.append(t)
+
+    for t in thr:
+        t.join()
+
+    if update_notes:
+        for user in range(len(current_notes)):
+            if not output[user]["notes"]:
+                print("Skipping user as no new notes were recieved")
+                continue
+            else:
+                current_notes[user]["notes"] = output[user]["notes"] + current_notes[user]["notes"]
+    else:
+        current_notes = output
+
+    with open("./allnotes.json", 'w', encoding='utf8') as f:
+        json.dump(current_notes, f, indent="  ")
