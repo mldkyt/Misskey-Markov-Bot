@@ -36,7 +36,7 @@ def getNotes(userId, instance, token, since = None):
         while not isComplete:
             print("Got {} notes".format(noteCount))
             notes = mk.users_notes(user_id = userId, limit = 100, include_replies = True, since_id = notes[0]["id"], include_my_renotes = False)
-            allNotes = notes + allnotes
+            allNotes = notes + allNotes
             noteCount = noteCount + len(notes)
             if len(notes) != 100: isComplete = True
         allNotes.reverse()
