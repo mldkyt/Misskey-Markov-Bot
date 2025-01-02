@@ -166,3 +166,6 @@ cython_debug/
 users.csv
 allnotes.json
 filter.csv
+
+# Ignore mldchan's .idea files :3
+.idea/
