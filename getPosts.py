@@ -14,6 +14,7 @@ else:
     currentNotes = []
     usersFile = open("users.csv").read().split("\n")[:-1]
     for line in usersFile:
+        if len(line) == 0: continue
         users.append(line.replace(" ", "").split(",") + [None])
 
 for user in users:
