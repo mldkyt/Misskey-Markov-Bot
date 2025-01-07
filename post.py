@@ -16,6 +16,7 @@
 
 import json
 from os import path
+import csv
 
 from misskey import Misskey
 
@@ -26,9 +27,12 @@ if __name__ == '__main__':
         print("No notes found! Please fetch posts first then try again.")
         quit()
 
-    # Get the token from the token file
-    token = json.load(open("./allnotes.json"))[0]["token"]
-    instance = json.load(open("./allnotes.json"))[0]["instance"]
+    # Get the token from the users.csv file first row
+    with open("users.csv", "r") as f:
+        reader = csv.reader(f)
+        line = next(reader)
+        instance = f'https://{line[1].strip()}'
+        token = line[2].strip()
 
     # Read the generated post
     post = generate.generate_post()
